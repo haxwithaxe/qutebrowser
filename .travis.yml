@@ -1,6 +1,7 @@
-# So we get Ubuntu Trusty - using "dist: trusty" breaks OS X.
 sudo: required
 dist: trusty
+services:
+  - docker
 
 os:
   - linux
@@ -14,6 +15,7 @@ env:
     - TESTENV=py35
     - TESTENV=py34-cov
     - TESTENV=unittests-nodisp
+    - DOCKERIMG=archlinux
     - TESTENV=misc
     - TESTENV=vulture
     - TESTENV=flake8
@@ -34,7 +36,8 @@ install:
   - python scripts/dev/ci_install.py
 
 script:
-  - tox -e $TESTENV
+  - '[[ $TESTENV ]] && tox -e $TESTENV'
+  - '[[ $DOCKERIMG ]] && docker run --privileged --rm -it -v $PWD:/outside thecompiler/qutebrowser-manual:$DOCKERIMG'
 
 after_success:
   - '[[ $TESTENV == *-cov ]] && codecov -e TESTENV -X gcov'
@@ -61,6 +64,8 @@ matrix:
       env: TESTENV=pylint
     - os: osx
       env: TESTENV=eslint
+    - os: osx
+      env: DOCKERIMG=archlinux
 
 notifications:
   webhooks:
