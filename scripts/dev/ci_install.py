@@ -40,12 +40,13 @@ try:
 except ImportError:
     winreg = None
 
-TESTENV = os.environ['TESTENV']
+TESTENV = os.environ.get('TESTENV', '')
 TRAVIS_OS = os.environ.get('TRAVIS_OS_NAME', None)
 INSTALL_PYQT = TESTENV in ('py34', 'py35', 'py34-cov', 'py35-cov',
                            'unittests-nodisp', 'vulture', 'pylint')
 XVFB = TRAVIS_OS == 'linux' and TESTENV == 'py34'
-pip_packages = ['tox']
+if TESTENV:
+    pip_packages = ['tox']
 if TESTENV.endswith('-cov'):
     pip_packages.append('codecov')
 
