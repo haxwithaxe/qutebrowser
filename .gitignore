@@ -1,0 +1,7 @@
+.venv/
+build/
+dist/
+qutebrowser.egg-info/
+qutebrowser/
+scripts/
+
